@@ -73,7 +73,10 @@ function addTests(transform, testDirectory, test) {
         assert(typeof template.fn === 'function', 'template.fn should be a function');
         assertEqual(template.fn(locals).trim(), expected);
         assert(Array.isArray(template.dependencies), ' template.dependencies should be an array');
-        assertDeepEqual(template.dependencies, dependencies || []);
+        assert(template.dependencies.every(function (path) { return typeof path === 'string'; }), ' template.dependencies should all be strings');
+        assertDeepEqual(template.dependencies.map(function (path) {
+          return resolve(path);
+        }), dependencies || []);
       } else {
         assert(typeof template === 'function', 'template should be a function, or an object with an "fn" property of type function and a "dependencies" property that is an array.');
         assertEqual(template(locals).trim(), expected);
@@ -172,9 +175,9 @@ function addTests(transform, testDirectory, test) {
       });
     }
     var dir = fs.readdirSync(testDirectory).filter(function (filename) {
-      return !/\./.test(filename)
+      return filename[0] !== '.'
     });
-    var isMultiTest = dir.every(function (file) {
+    var isMultiTest = dir.length && dir.every(function (file) {
       return fs.statSync(testDirectory + '/' + file).isDirectory();
     });
     if (isMultiTest) {
