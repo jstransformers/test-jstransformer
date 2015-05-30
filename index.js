@@ -55,6 +55,13 @@ function read(filename) {
   return fs.readFileSync(filename, 'utf8');
 }
 
+function requireJsonOrFallback(filename, fallback) {
+  if (fs.existsSync(filename + '.json')) {
+    return require(filename);
+  }
+  return fallback;
+}
+
 module.exports = addTests;
 function addTests(transform, testDirectory, test) {
   test = test || testit;
@@ -62,9 +69,9 @@ function addTests(transform, testDirectory, test) {
   function addTestCases(directory) {
     var inputFile = getFilename(directory + '/input.*');
     var input = read(inputFile);
-    var options = require(directory + '/options');
-    var locals = require(directory + '/locals');
-    var dependencies = require(directory + '/dependencies').map(function (dep) { return resolve(directory, dep); });
+    var options = requireJsonOrFallback(directory + '/options', {});
+    var locals = requireJsonOrFallback(directory + '/locals', {});
+    var dependencies = requireJsonOrFallback(directory + '/dependencies', []).map(function (dep) { return resolve(directory, dep); });
     var expected = read(directory + '/expected.*').trim();
 
     function checkFunctionOutput(template) {
