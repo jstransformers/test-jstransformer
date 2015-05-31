@@ -175,7 +175,7 @@ function addTests(transform, testDirectory, test) {
       });
     }
     var dir = fs.readdirSync(testDirectory).filter(function (filename) {
-      return filename[0] !== '.'
+      return filename[0] !== '.';
     });
     var isMultiTest = dir.length && dir.every(function (file) {
       return fs.statSync(testDirectory + '/' + file).isDirectory();
