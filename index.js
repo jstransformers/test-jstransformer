@@ -60,12 +60,12 @@ function addTests(transform, testDirectory, test) {
   test = test || testit;
 
   function addTestCases(directory) {
-    var inputFile = getFilename(directory + '/input.*');
+    var inputFile = getFilename(join(directory, 'input.*'));
     var input = read(inputFile);
-    var options = require(directory + '/options');
-    var locals = require(directory + '/locals');
-    var dependencies = require(directory + '/dependencies').map(function (dep) { return resolve(directory, dep); });
-    var expected = read(directory + '/expected.*').trim();
+    var options = require(join(directory, 'options'));
+    var locals = require(join(directory, 'locals'));
+    var dependencies = require(join(directory, 'dependencies')).map(function (dep) { return resolve(directory, dep); });
+    var expected = read(join(directory, 'expected.*')).trim();
 
     function checkFunctionOutput(template) {
       if ((dependencies && dependencies.length) || (typeof template === 'object' && template)) {
@@ -178,12 +178,12 @@ function addTests(transform, testDirectory, test) {
       return filename[0] !== '.';
     });
     var isMultiTest = dir.length && dir.every(function (file) {
-      return fs.statSync(testDirectory + '/' + file).isDirectory();
+      return fs.statSync(join(testDirectory, file)).isDirectory();
     });
     if (isMultiTest) {
       dir.forEach(function (subdir) {
         test(subdir, function () {
-          addTestCases(testDirectory + '/' + subdir);
+          addTestCases(join(testDirectory, subdir));
         });
       });
     } else {
