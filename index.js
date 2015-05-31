@@ -95,67 +95,42 @@ function addTests(transform, testDirectory, test) {
       }
     }
 
+    function syncTest(funcName, input, check) {
+      var renderTest = /^render/.test(funcName);
+      if (!transform[funcName]) return;
 
-    if (transform.compile) {
-      test(transform.name + '.compile()', function () {
-        var template = transform.compile(input, options);
-        checkFunctionOutput(template);
-      });
-    }
-
-    if (transform.compileAsync) {
-      test(transform.name + '.compileAsync()', function () {
-        return transform.compileAsync(input, options).then(function (template) {
-          checkFunctionOutput(template);
-        });
-      });
-    }
-
-    if (transform.compileFile) {
-      test(transform.name + '.compileFile()', function () {
-        var template = transform.compileFile(inputFile, options);
-        checkFunctionOutput(template);
-      });
-    }
-
-    if (transform.compileFileAsync) {
-      test(transform.name + '.compileFileAsync()', function () {
-        return transform.compileFileAsync(inputFile, options).then(function (template) {
-          checkFunctionOutput(template);
-        });
-      });
-    }
-
-    if (transform.render) {
-      test(transform.name + '.render()', function () {
-        var output = transform.render(input, options, locals);
-        checkOutput(output);
-      });
-    }
-
-    if (transform.renderAsync) {
-      test(transform.name + '.renderAsync()', function () {
-        return transform.renderAsync(input, options, locals).then(function (output) {
+      test(transform.name + '.' + funcName + '()', function () {
+        if (renderTest) {
+          var output = transform[funcname](input, options, locals);
           checkOutput(output);
-        });
+        } else {
+          var template = transform[funcName](input, options);
+          checkFunctionOutput(template);
+        }
       });
     }
+    syncTest('compile', input);
+    syncTest('compileFile', inputFile);
+    syncTest('render', input);
+    syncTest('renderFile', inputFile);
 
-    if (transform.renderFile) {
-      test(transform.name + '.render()', function () {
-        var output = transform.renderFile(inputFile, options, locals);
-        checkOutput(output);
+    function asyncTest(funcName, input) {
+      var renderTest = /^render/.test(funcName);
+      funcName = funcName + 'Async';
+      if (!transform[funcName]) return;
+
+      test(transform.name + '.' + funcName + '()', function () {
+        if (renderTest) {
+          transform[funcName](input, options, locals).then(checkOutput);
+        } else {
+          transform[funcName](input, options).then(checkFunctionOutput);
+        }
       });
     }
-
-    if (transform.renderFileAsync) {
-      test(transform.name + '.renderFileAsync()', function () {
-        transform.renderFileAsync(inputFile, options, locals).then(function (output) {
-          checkOutput(output);
-        });
-      });
-    }
-
+    asyncTest('compile', input);
+    asyncTest('compileFile', inputFile);
+    asyncTest('render', input);
+    asyncTest('renderFile', inputFile);
   }
 
   assert(transform  && typeof transform === 'object', 'Transform must be an object');
