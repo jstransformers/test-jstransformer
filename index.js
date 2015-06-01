@@ -58,9 +58,9 @@ function read(filename) {
 /**
  * Loads the given package with require(), returning the fallback value on failure.
  */
-function requireOrFallback(package, fallback) {
+function requireOrFallback(name, fallback) {
   try {
-    return require(package);
+    return require(name);
   }
   catch (e) {
     return fallback;
