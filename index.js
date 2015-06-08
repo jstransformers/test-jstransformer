@@ -142,7 +142,7 @@ function addTests(transform, testDirectory, test) {
     }
 
     if (transform.renderFile) {
-      test(transform.name + '.render()', function () {
+      test(transform.name + '.renderFile()', function () {
         var output = transform.renderFile(inputFile, options, locals);
         checkOutput(output);
       });
