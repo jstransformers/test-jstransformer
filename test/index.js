@@ -15,6 +15,17 @@ testJStransformer({
 }, resolve(__dirname + '/../example/simple'));
 
 testJStransformer({
+  name: 'simpleCompileAsync',
+  outputFormat: 'txt',
+  inputFormats: ['txt'],
+  compileAsync: function (str, options) {
+    return new Promise(function (fulfill, reject) {
+      fulfill(function (locals) { return 'output text'; });
+    })
+  }
+}, resolve(__dirname + '/../example/simple'));
+
+testJStransformer({
   name: 'multi',
   outputFormat: 'txt',
   inputFormats: ['txt'],

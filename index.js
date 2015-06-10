@@ -104,9 +104,13 @@ function addTests(transform, testDirectory, test) {
     }
 
     if (transform.compileAsync) {
-      test(transform.name + '.compileAsync()', function () {
+      test(transform.name + '.compileAsync()', function (done) {
         return transform.compileAsync(input, options).then(function (template) {
           checkFunctionOutput(template);
+          done();
+        }, function (err) {
+          throw new Error(err);
+          done(new Error(err));
         });
       });
     }
@@ -119,9 +123,13 @@ function addTests(transform, testDirectory, test) {
     }
 
     if (transform.compileFileAsync) {
-      test(transform.name + '.compileFileAsync()', function () {
+      test(transform.name + '.compileFileAsync()', function (done) {
         return transform.compileFileAsync(inputFile, options).then(function (template) {
           checkFunctionOutput(template);
+          done();
+        }, function (err) {
+          throw new Error(err);
+          done(new Error(err));
         });
       });
     }
@@ -134,9 +142,13 @@ function addTests(transform, testDirectory, test) {
     }
 
     if (transform.renderAsync) {
-      test(transform.name + '.renderAsync()', function () {
+      test(transform.name + '.renderAsync()', function (done) {
         return transform.renderAsync(input, options, locals).then(function (output) {
           checkOutput(output);
+          done();
+        }, function (err) {
+          throw new Error(err);
+          done(new Error(err));
         });
       });
     }
@@ -149,9 +161,13 @@ function addTests(transform, testDirectory, test) {
     }
 
     if (transform.renderFileAsync) {
-      test(transform.name + '.renderFileAsync()', function () {
+      test(transform.name + '.renderFileAsync()', function (done) {
         transform.renderFileAsync(inputFile, options, locals).then(function (output) {
           checkOutput(output);
+          done();
+        }, function (err) {
+          throw new Error(err);
+          done(new Error(err));
         });
       });
     }
