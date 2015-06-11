@@ -109,7 +109,6 @@ function addTests(transform, testDirectory, test) {
           checkFunctionOutput(template);
           done();
         }, function (err) {
-          throw new Error(err);
           done(new Error(err));
         });
       });
@@ -128,7 +127,6 @@ function addTests(transform, testDirectory, test) {
           checkFunctionOutput(template);
           done();
         }, function (err) {
-          throw new Error(err);
           done(new Error(err));
         });
       });
@@ -147,7 +145,7 @@ function addTests(transform, testDirectory, test) {
           checkOutput(output);
           done();
         }, function (err) {
-          throw new Error(err);
+          console.log(err);
           done(new Error(err));
         });
       });
@@ -166,7 +164,6 @@ function addTests(transform, testDirectory, test) {
           checkOutput(output);
           done();
         }, function (err) {
-          throw new Error(err);
           done(new Error(err));
         });
       });
