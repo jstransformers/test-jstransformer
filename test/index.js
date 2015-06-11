@@ -65,3 +65,18 @@ testJStransformer({
     });
   }
 }, resolve(__dirname + '/../example/simple'));
+
+/**
+ * Failure test: Remove this!
+ */
+testJStransformer({
+  name: 'renderAsync: This reports a failure, but still passes',
+  outputFormat: 'txt',
+  inputFormats: ['txt'],
+  renderAsync: function (str, options, locals) {
+    return new Promise(function(fulfill, reject) {
+      // Call reject to test a failed run.
+      reject('FAILURE!');
+    });
+  }
+}, resolve(__dirname + '/../example/simple'));
