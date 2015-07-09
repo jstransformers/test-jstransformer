@@ -108,9 +108,7 @@ function addTests(transform, testDirectory, test) {
         return transform.compileAsync(input, options).then(function (template) {
           checkFunctionOutput(template);
           done();
-        }, function (err) {
-          done(new Error(err));
-        });
+        }, done).catch(done);
       });
     }
 
@@ -123,12 +121,10 @@ function addTests(transform, testDirectory, test) {
 
     if (transform.compileFileAsync) {
       test(transform.name + '.compileFileAsync()', function (done) {
-        return transform.compileFileAsync(inputFile, options).then(function (template) {
+        transform.compileFileAsync(inputFile, options).then(function (template) {
           checkFunctionOutput(template);
           done();
-        }, function (err) {
-          done(new Error(err));
-        });
+        }, done).catch(done);
       });
     }
 
@@ -141,13 +137,10 @@ function addTests(transform, testDirectory, test) {
 
     if (transform.renderAsync) {
       test(transform.name + '.renderAsync()', function (done) {
-        return transform.renderAsync(input, options, locals).then(function (output) {
+        transform.renderAsync(input, options, locals).then(function (output) {
           checkOutput(output);
           done();
-        }, function (err) {
-          console.log(err);
-          done(new Error(err));
-        });
+        }, done).catch(done);
       });
     }
 
@@ -163,9 +156,7 @@ function addTests(transform, testDirectory, test) {
         transform.renderFileAsync(inputFile, options, locals).then(function (output) {
           checkOutput(output);
           done();
-        }, function (err) {
-          done(new Error(err));
-        });
+        }, done).catch(done);
       });
     }
 
