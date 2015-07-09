@@ -57,6 +57,11 @@ function read(filename) {
 
 /**
  * Loads the given package with require(), returning the fallback value on failure.
+ *
+ * @param {string} name - The name of the module to require().
+ * @param [fallback] - The value to return if loading the module fails.
+ *
+ * @return The loaded package, or the fallback value if loading failed.
  */
 function requireOrFallback(name, fallback) {
   try {
@@ -72,12 +77,12 @@ function addTests(transform, testDirectory, test) {
   test = test || testit;
 
   function addTestCases(directory) {
-    var inputFile = getFilename(directory + '/input.*');
+    var inputFile = getFilename(join(directory, 'input.*'));
     var input = read(inputFile);
-    var options = requireOrFallback(directory + '/options', {});
-    var locals = requireOrFallback(directory + '/locals', {});
-    var dependencies = requireOrFallback(directory + '/dependencies', []).map(function (dep) { return resolve(directory, dep); });
-    var expected = read(directory + '/expected.*').trim();
+    var options = requireOrFallback(join(directory, 'options'), {});
+    var locals = requireOrFallback(join(directory, 'locals'), {});
+    var dependencies = requireOrFallback(join(directory, 'dependencies'), []).map(function (dep) { return resolve(directory, dep); });
+    var expected = read(join(directory, 'expected.*')).trim();
 
     function checkFunctionOutput(template) {
       if ((dependencies && dependencies.length) || (typeof template === 'object' && template)) {
@@ -100,7 +105,9 @@ function addTests(transform, testDirectory, test) {
         assert(typeof output.body === 'string', 'output.body should be a string');
         assertEqual(output.body.trim(), expected);
         assert(Array.isArray(output.dependencies), ' output.dependencies should be an array');
-        assertDeepEqual(output.dependencies, dependencies || []);
+        assertDeepEqual(output.dependencies.map(function (path) {
+          return resolve(path);
+        }), dependencies || []);
       } else {
         assert(typeof output === 'string', 'output should be a string, or an object with a "body" property of type string and a "dependencies" property that is an array.');
         assertEqual(output.trim(), expected);
@@ -154,7 +161,7 @@ function addTests(transform, testDirectory, test) {
     }
 
     if (transform.renderFile) {
-      test(transform.name + '.render()', function () {
+      test(transform.name + '.renderFile()', function () {
         var output = transform.renderFile(inputFile, options, locals);
         checkOutput(output);
       });
@@ -187,15 +194,15 @@ function addTests(transform, testDirectory, test) {
       });
     }
     var dir = fs.readdirSync(testDirectory).filter(function (filename) {
-      return filename[0] !== '.'
+      return filename[0] !== '.';
     });
     var isMultiTest = dir.length && dir.every(function (file) {
-      return fs.statSync(testDirectory + '/' + file).isDirectory();
+      return fs.statSync(join(testDirectory, file)).isDirectory();
     });
     if (isMultiTest) {
       dir.forEach(function (subdir) {
         test(subdir, function () {
-          addTestCases(testDirectory + '/' + subdir);
+          addTestCases(join(testDirectory, subdir));
         });
       });
     } else {

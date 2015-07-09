@@ -1,6 +1,6 @@
 {
   "name": "test-jstransformer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A CLI for testing jstransformer implementations.",
   "bin": "./bin/cli.js",
   "keywords": [
@@ -13,6 +13,7 @@
   "dependencies": {
     "foreground-child": "^1.2.0",
     "istanbul": "^0.3.14",
+    "promise": "^7.0.1",
     "testit": "^2.0.2"
   },
   "scripts": {
