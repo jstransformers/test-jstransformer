@@ -88,7 +88,9 @@ function addTests(transform, testDirectory, test) {
         assert(typeof output.body === 'string', 'output.body should be a string');
         assertEqual(output.body.trim(), expected);
         assert(Array.isArray(output.dependencies), ' output.dependencies should be an array');
-        assertDeepEqual(output.dependencies, dependencies || []);
+        assertDeepEqual(output.dependencies.map(function (path) {
+          return resolve(path);
+        }), dependencies || []);
       } else {
         assert(typeof output === 'string', 'output should be a string, or an object with a "body" property of type string and a "dependencies" property that is an array.');
         assertEqual(output.trim(), expected);
