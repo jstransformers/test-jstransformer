@@ -59,7 +59,7 @@ function read(filename) {
 module.exports = addTests;
 function addTests(transform, testDirectory, test) {
   test = test || testit;
-  var titleName = camelcase(transform.name);
+  transform.name = camelcase(transform.name);
 
   function addTestCases(directory) {
     var inputFile = getFilename(join(directory, 'input.*'));
