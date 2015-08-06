@@ -8,7 +8,7 @@ var extname = require('path').extname;
 var basename = require('path').basename;
 var resolve = require('path').resolve;
 var testit = require('testit');
-var camelCase = require('camelcase');
+var camelcase = require('camelcase');
 
 function assertEqual(output, expected) {
   try {
@@ -59,7 +59,7 @@ function read(filename) {
 module.exports = addTests;
 function addTests(transform, testDirectory, test) {
   test = test || testit;
-  var titleName = camelCase(transform.name);
+  var titleName = camelcase(transform.name);
 
   function addTestCases(directory) {
     var inputFile = getFilename(join(directory, 'input.*'));
