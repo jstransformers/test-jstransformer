@@ -55,6 +55,23 @@ function read(filename) {
   return fs.readFileSync(filename, 'utf8');
 }
 
+/**
+ * Loads the given package with require(), returning the fallback value on failure.
+ *
+ * @param {string} name - The name of the module to require().
+ * @param [fallback] - The value to return if loading the module fails.
+ *
+ * @return The loaded package, or the fallback value if loading failed.
+ */
+function requireOrFallback(name, fallback) {
+  try {
+    return require(name);
+  }
+  catch (e) {
+    return fallback;
+  }
+}
+
 module.exports = addTests;
 function addTests(transform, testDirectory, test) {
   test = test || testit;
@@ -62,9 +79,9 @@ function addTests(transform, testDirectory, test) {
   function addTestCases(directory) {
     var inputFile = getFilename(join(directory, 'input.*'));
     var input = read(inputFile);
-    var options = require(join(directory, 'options'));
-    var locals = require(join(directory, 'locals'));
-    var dependencies = require(join(directory, 'dependencies')).map(function (dep) { return resolve(directory, dep); });
+    var options = requireOrFallback(join(directory, 'options'), {});
+    var locals = requireOrFallback(join(directory, 'locals'), {});
+    var dependencies = requireOrFallback(join(directory, 'dependencies'), []).map(function (dep) { return resolve(directory, dep); });
     var expected = read(join(directory, 'expected.*')).trim();
 
     function checkFunctionOutput(template) {
