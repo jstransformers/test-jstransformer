@@ -17,8 +17,8 @@ In your package.json add:
 ```js
 {
   "scripts": {
-    "test": "test-jstransformer",
-    "coverage": "test-jstransformer coverage"
+    "coverage": "test-jstransformer coverage",
+    "test": "test-jstransformer"
   }
 }
 ```
