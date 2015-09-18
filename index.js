@@ -52,7 +52,7 @@ function getFilename(filename) {
 }
 function read(filename) {
   filename = getFilename(filename);
-  return fs.readFileSync(filename, 'utf8');
+  return fs.readFileSync(filename, 'utf8').trim();
 }
 
 module.exports = addTests;
@@ -65,7 +65,7 @@ function addTests(transform, testDirectory, test) {
     var options = require(join(directory, 'options'));
     var locals = require(join(directory, 'locals'));
     var dependencies = require(join(directory, 'dependencies')).map(function (dep) { return resolve(directory, dep); });
-    var expected = read(join(directory, 'expected.*')).trim();
+    var expected = read(join(directory, 'expected.*'));
 
     function checkFunctionOutput(template) {
       if ((dependencies && dependencies.length) || (typeof template === 'object' && template)) {
