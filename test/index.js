@@ -65,3 +65,18 @@ testJStransformer({
     });
   }
 }, resolve(__dirname + '/../example/simple'));
+
+testJStransformer({
+  name: 'compileAsync - Promise',
+  outputFormat: 'txt',
+  inputFormats: ['txt'],
+  compileAsync: function (file, options) {
+    return new Promise(function (fulfill, reject) {
+      fulfill(function (locals) {
+        return new Promise(function (resolve, fail) {
+          resolve('output text');
+        });
+      });
+    });
+  }
+}, resolve(__dirname + '/../example/simple'));

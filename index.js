@@ -82,6 +82,25 @@ function addTests(transform, testDirectory, test) {
         assertEqual(template(locals).trim(), expected);
       }
     }
+    function checkFunctionAsyncOutput(template) {
+      if ((dependencies && dependencies.length) || (typeof template === 'object' && template)) {
+        assert(typeof template === 'object' && template, ' template should be an object because this module tracks dependencies');
+        assert(typeof template.fn === 'function', 'template.fn should be a function');
+        template.fn(locals).then(function (result) {
+          assertEqual(result.trim(), expected);
+        })
+        assert(Array.isArray(template.dependencies), ' template.dependencies should be an array');
+        assert(template.dependencies.every(function (path) { return typeof path === 'string'; }), ' template.dependencies should all be strings');
+        assertDeepEqual(template.dependencies.map(function (path) {
+          return resolve(path);
+        }), dependencies || []);
+      } else {
+        assert(typeof template === 'function', 'template should be a function, or an object with an "fn" property of type function and a "dependencies" property that is an array.');
+        template(locals).then(function (result) {
+          assertEqual(result.trim(), expected);
+        })
+      }
+    }
     function checkOutput(output) {
       if ((dependencies && dependencies.length) || (typeof output === 'object' && output)) {
         assert(typeof output === 'object' && output, ' output should be an object because this module tracks dependencies');
@@ -108,7 +127,7 @@ function addTests(transform, testDirectory, test) {
     if (transform.compileAsync) {
       test(transform.name + '.compileAsync()', function () {
         return transform.compileAsync(input, options).then(function (template) {
-          checkFunctionOutput(template);
+          checkFunctionAsyncOutput(template);
         });
       });
     }
@@ -123,7 +142,7 @@ function addTests(transform, testDirectory, test) {
     if (transform.compileFileAsync) {
       test(transform.name + '.compileFileAsync()', function () {
         return transform.compileFileAsync(inputFile, options).then(function (template) {
-          checkFunctionOutput(template);
+          checkFunctionAsyncOutput(template);
         });
       });
     }
