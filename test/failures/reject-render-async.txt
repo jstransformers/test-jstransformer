@@ -1,0 +1,17 @@
+code: 1
+
+stdout:
+
+ • renderAsync: This used to pass despite returning a rejected promise
+   ✓ transform has an output format (#ms)
+   ✓ transform has input formats (#ms)
+   ✗ renderAsync: This used to pass despite returning a rejected promise.renderAsync() (#ms)
+
+     FAILURE!
+
+Total duration #ms
+tests failed
+
+
+stderr:
+
