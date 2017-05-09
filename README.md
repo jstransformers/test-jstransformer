@@ -3,9 +3,9 @@
 A CLI for testing jstransformer implementations.
 
 [![Build Status](https://img.shields.io/travis/jstransformers/test-jstransformer/master.svg)](https://travis-ci.org/jstransformers/test-jstransformer)
+[![Greenkeeper badge](https://badges.greenkeeper.io/jstransformers/test-jstransformer.svg)](https://greenkeeper.io/)
 [![Coverage Status](https://img.shields.io/coveralls/jstransformers/test-jstransformer/master.svg)](https://coveralls.io/r/jstransformers/test-jstransformer?branch=master)
 [![NPM version](https://img.shields.io/npm/v/test-jstransformer.svg)](https://www.npmjs.org/package/test-jstransformer)
-[![Greenkeeper badge](https://badges.greenkeeper.io/jstransformers/test-jstransformer.svg)](https://greenkeeper.io/)
 
 ## Installation
 
