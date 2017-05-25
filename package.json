@@ -13,11 +13,11 @@
   "dependencies": {
     "foreground-child": "^1.2.0",
     "istanbul": "^0.4.0",
-    "promise": "^7.0.1",
     "testit": "^2.0.2"
   },
   "scripts": {
     "test": "node test",
+    "posttest": "xo",
     "coverage": "istanbul cover test"
   },
   "repository": {
@@ -25,5 +25,8 @@
     "url": "https://github.com/jstransformers/test-jstransformer.git"
   },
   "author": "Forbes Lindesay",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "xo": "^0.18.2"
+  }
 }
