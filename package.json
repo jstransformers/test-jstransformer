@@ -7,18 +7,19 @@
     "jstransformer"
   ],
   "files": [
-    "index.js",
-    "bin/cli.js"
+    "bin/cli.js",
+    "index.js"
   ],
   "dependencies": {
+    "camelcase": "^1.2.1",
     "foreground-child": "^1.2.0",
     "istanbul": "^0.4.0",
     "promise": "^7.0.1",
     "testit": "^2.0.2"
   },
   "scripts": {
-    "test": "node test",
-    "coverage": "istanbul cover test"
+    "coverage": "istanbul cover test",
+    "test": "node test"
   },
   "repository": {
     "type": "git",
