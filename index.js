@@ -106,10 +106,11 @@ function addTests(transform, testDirectory, test) {
     }
 
     if (transform.compileAsync) {
-      test(transform.name + '.compileAsync()', function () {
+      test(transform.name + '.compileAsync()', function (done) {
         return transform.compileAsync(input, options).then(function (template) {
           checkFunctionOutput(template);
-        });
+          done();
+        }, done).catch(done);
       });
     }
 
@@ -121,10 +122,11 @@ function addTests(transform, testDirectory, test) {
     }
 
     if (transform.compileFileAsync) {
-      test(transform.name + '.compileFileAsync()', function () {
-        return transform.compileFileAsync(inputFile, options).then(function (template) {
+      test(transform.name + '.compileFileAsync()', function (done) {
+        transform.compileFileAsync(inputFile, options).then(function (template) {
           checkFunctionOutput(template);
-        });
+          done();
+        }, done).catch(done);
       });
     }
 
@@ -136,10 +138,11 @@ function addTests(transform, testDirectory, test) {
     }
 
     if (transform.renderAsync) {
-      test(transform.name + '.renderAsync()', function () {
-        return transform.renderAsync(input, options, locals).then(function (output) {
+      test(transform.name + '.renderAsync()', function (done) {
+        transform.renderAsync(input, options, locals).then(function (output) {
           checkOutput(output);
-        });
+          done();
+        }, done).catch(done);
       });
     }
 
@@ -151,10 +154,11 @@ function addTests(transform, testDirectory, test) {
     }
 
     if (transform.renderFileAsync) {
-      test(transform.name + '.renderFileAsync()', function () {
+      test(transform.name + '.renderFileAsync()', function (done) {
         transform.renderFileAsync(inputFile, options, locals).then(function (output) {
           checkOutput(output);
-        });
+          done();
+        }, done).catch(done);
       });
     }
 
