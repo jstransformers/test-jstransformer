@@ -14,7 +14,7 @@
     "foreground-child": "^1.2.0",
     "istanbul": "^0.4.0",
     "promise": "^7.0.1",
-    "testit": "^2.0.2"
+    "testit": "^2.1.1"
   },
   "scripts": {
     "test": "node test",
