@@ -1,104 +1,120 @@
 'use strict';
 
-var fs = require('fs');
-var assert = require('assert');
-var cp = require('child_process');
-var resolve = require('path').resolve;
-var test = require('testit');
-var testJStransformer = require('../');
-var Promise = require('promise');
+const path = require('path');
+const fs = require('fs');
+const assert = require('assert');
+const cp = require('child_process');
+const test = require('testit');
+const testJStransformer = require('../');
+
+const resolve = path.resolve;
+const simplePath = path.join(__dirname, '..', 'example', 'simple');
+const multiPath = path.join(__dirname, '..', 'example', 'multi');
 
 testJStransformer({
   name: 'simple',
   outputFormat: 'txt',
   inputFormats: ['txt'],
-  compile: function (str, options) {
-    return function (locals) { return 'output text'; }
+  compile: () => {
+    return () => {
+      return 'output text';
+    };
   }
-}, resolve(__dirname + '/../example/simple'));
+}, resolve(simplePath));
 
 testJStransformer({
   name: 'multi',
   outputFormat: 'txt',
   inputFormats: ['txt'],
-  compile: function (str, options) {
+  compile: str => {
+    const secondCase = path.join(__dirname, '..', 'example', 'multi', 'second-case');
     return {
-      fn: function (locals) { return 'output text'; },
-      dependencies: /load foo.js/.test(str) ? [resolve(__dirname + '/../example/multi/second-case/', './foo.js')] : []
+      fn: () => {
+        return 'output text';
+      },
+      dependencies: /load foo.js/.test(str) ? [resolve(secondCase, './foo.js')] : []
     };
   }
-}, resolve(__dirname + '/../example/multi'));
+}, resolve(multiPath));
 
 testJStransformer({
   name: 'render',
   outputFormat: 'txt',
   inputFormats: ['txt'],
-  render: function (str, options, locals) {
+  render: () => {
     return 'output text';
   }
-}, resolve(__dirname + '/../example/simple'));
+}, resolve(simplePath));
 
 testJStransformer({
   name: 'renderAsync',
   outputFormat: 'txt',
   inputFormats: ['txt'],
-  renderAsync: function (str, options, locals) {
-    return new Promise(function(fulfill, reject) {
-      fulfill('output text');
+  renderAsync: () => {
+    return new Promise(resolve => {
+      resolve('output text');
     });
   }
-}, resolve(__dirname + '/../example/simple'));
+}, resolve(simplePath));
 
 testJStransformer({
   name: 'renderFile',
   outputFormat: 'txt',
   inputFormats: ['txt'],
-  renderFile: function (file, options, locals) {
+  renderFile: () => {
     return 'output text';
   }
-}, resolve(__dirname + '/../example/simple'));
+}, resolve(simplePath));
 
 testJStransformer({
   name: 'renderFileAsync',
   outputFormat: 'txt',
   inputFormats: ['txt'],
-  renderFileAsync: function (file, options, locals) {
-    return new Promise(function(fulfill, reject) {
-      fulfill('output text');
+  renderFileAsync: () => {
+    return new Promise(resolve => {
+      resolve('output text');
     });
   }
-}, resolve(__dirname + '/../example/simple'));
+}, resolve(simplePath));
 
-test('failures', function () {
-  fs.readdirSync(resolve(__dirname + '/failures')).forEach(function (testCase) {
-    if (!/\.js$/.test(testCase)) return;
-    test(testCase, function () {
-      return new Promise(function (resolve, reject) {
-        var stdout = '';
-        var stderr = '';
-        var child = cp.fork(require.resolve('./failures/' + testCase), {silent: true});
-        child.stdout.on('data', function (data) {
+test('failures', () => {
+  const failuresPath = path.join(__dirname, 'failures');
+  fs.readdirSync(resolve(failuresPath)).forEach(testCase => {
+    if (!/\.js$/.test(testCase)) {
+      return;
+    }
+    test(testCase, () => {
+      return new Promise(resolve => {
+        let stdout = '';
+        let stderr = '';
+        const failPath = path.join('failures', testCase);
+        console.log(failPath);
+        const child = cp.fork(require.resolve('./' + failPath), {
+          silent: true
+        });
+        child.stdout.on('data', data => {
           stdout += data;
         });
-        child.stderr.on('data', function (data) {
+        child.stderr.on('data', data => {
           stderr += data;
         });
-        child.on('exit', function (code) {
+        child.on('exit', code => {
           resolve(
             'code: ' + code +
             '\n\nstdout:\n\n' + stdout.replace(/\d+[a-z]+/g, '#ms').replace(/\r\n/g, '\n') +
             '\n\nstderr:\n\n' + stderr.replace(/\r\n/g, '\n')
           );
         });
-      }).then(function (result) {
-        var expected;
+      }).then(result => {
+        let expected;
+        const testCasePath = path.join(__dirname, 'failures', testCase.replace(/\.js$/, '.txt'));
         try {
-          expected = fs.readFileSync(resolve(__dirname + '/failures/' + testCase.replace(/\.js$/, '.txt')), 'utf8');
-        } catch (ex) {
-          if (ex.code === 'ENOENT') {
-            fs.writeFileSync(resolve(__dirname + '/failures/' + testCase.replace(/\.js$/, '.txt')), result);
+          expected = fs.readFileSync(resolve(testCasePath), 'utf8');
+        } catch (err) {
+          if (err.code === 'ENOENT') {
+            fs.writeFileSync(resolve(testCasePath), result);
           }
-          throw ex;
+          throw err;
         }
         assert.strictEqual(result, expected);
       });
