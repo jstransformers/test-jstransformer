@@ -34,7 +34,7 @@ function getFilename(filename) {
 		let gotResult = false;
 		for (let i = 0; i < dir.length; i++) {
 			const p = filename.replace(/\.\*$/, extname(dir[i]));
-			if (dir[i] === basename(p)){
+			if (dir[i] === basename(p)) {
 				if (gotResult) {
 					throw new Error('Multiple files were found matching ' + filename);
 				}
@@ -44,13 +44,12 @@ function getFilename(filename) {
 		}
 		if (gotResult) {
 			return resolve(result);
-		} else {
-			throw new Error('Could not find a file matching ' + filename);
 		}
-	} else {
-		return resolve(filename);
+		throw new Error('Could not find a file matching ' + filename);
 	}
+	return resolve(filename);
 }
+
 function read(filename) {
 	filename = getFilename(filename);
 	return fs.readFileSync(filename, 'utf8').trim();
@@ -61,21 +60,25 @@ function addTests(transform, testDirectory, test) {
 	test = test || testit;
 
 	function addTestCases(directory) {
-		let inputFile = getFilename(join(directory, 'input.*'));
-		let input = read(inputFile);
-		let options = require(join(directory, 'options'));
-		let locals = require(join(directory, 'locals'));
-		let dependencies = require(join(directory, 'dependencies')).map(function (dep) { return resolve(directory, dep); });
-		let expected = read(join(directory, 'expected.*'));
+		const inputFile = getFilename(join(directory, 'input.*'));
+		const input = read(inputFile);
+		const options = require(join(directory, 'options'));
+		const locals = require(join(directory, 'locals'));
+		const dependencies = require(join(directory, 'dependencies')).map(dep => {
+			return resolve(directory, dep);
+		});
+		const expected = read(join(directory, 'expected.*'));
 
 		function checkFunctionOutput(template) {
-			if ((dependencies && dependencies.length) || (typeof template === 'object' && template)) {
+			if ((dependencies && dependencies.length > 0) || (typeof template === 'object' && template)) {
 				assert(typeof template === 'object' && template, ' template should be an object because this module tracks dependencies');
 				assert(typeof template.fn === 'function', 'template.fn should be a function');
 				assertEqual(template.fn(locals).trim(), expected);
 				assert(Array.isArray(template.dependencies), ' template.dependencies should be an array');
-				assert(template.dependencies.every(function (path) { return typeof path === 'string'; }), ' template.dependencies should all be strings');
-				assertDeepEqual(template.dependencies.map(function (path) {
+				assert(template.dependencies.every(path => {
+					return typeof path === 'string';
+				}), ' template.dependencies should all be strings');
+				assertDeepEqual(template.dependencies.map(path => {
 					return resolve(path);
 				}), dependencies || []);
 			} else {
@@ -84,12 +87,12 @@ function addTests(transform, testDirectory, test) {
 			}
 		}
 		function checkOutput(output) {
-			if ((dependencies && dependencies.length) || (typeof output === 'object' && output)) {
+			if ((dependencies && dependencies.length > 0) || (typeof output === 'object' && output)) {
 				assert(typeof output === 'object' && output, ' output should be an object because this module tracks dependencies');
 				assert(typeof output.body === 'string', 'output.body should be a string');
 				assertEqual(output.body.trim(), expected);
 				assert(Array.isArray(output.dependencies), ' output.dependencies should be an array');
-				assertDeepEqual(output.dependencies.map(function (path) {
+				assertDeepEqual(output.dependencies.map(path => {
 					return resolve(path);
 				}), dependencies || []);
 			} else {
@@ -98,70 +101,68 @@ function addTests(transform, testDirectory, test) {
 			}
 		}
 
-
 		if (transform.compile) {
-			test(transform.name + '.compile()', function () {
-				var template = transform.compile(input, options);
+			test(transform.name + '.compile()', () => {
+				const template = transform.compile(input, options);
 				checkFunctionOutput(template);
 			});
 		}
 
 		if (transform.compileAsync) {
-			test(transform.name + '.compileAsync()', function () {
-				return transform.compileAsync(input, options).then(function (template) {
+			test(transform.name + '.compileAsync()', () => {
+				return transform.compileAsync(input, options).then(template => {
 					checkFunctionOutput(template);
 				});
 			});
 		}
 
 		if (transform.compileFile) {
-			test(transform.name + '.compileFile()', function () {
-				var template = transform.compileFile(inputFile, options);
+			test(transform.name + '.compileFile()', () => {
+				const template = transform.compileFile(inputFile, options);
 				checkFunctionOutput(template);
 			});
 		}
 
 		if (transform.compileFileAsync) {
-			test(transform.name + '.compileFileAsync()', function () {
-				return transform.compileFileAsync(inputFile, options).then(function (template) {
+			test(transform.name + '.compileFileAsync()', () => {
+				return transform.compileFileAsync(inputFile, options).then(template => {
 					checkFunctionOutput(template);
 				});
 			});
 		}
 
 		if (transform.render) {
-			test(transform.name + '.render()', function () {
-				var output = transform.render(input, options, locals);
+			test(transform.name + '.render()', () => {
+				const output = transform.render(input, options, locals);
 				checkOutput(output);
 			});
 		}
 
 		if (transform.renderAsync) {
-			test(transform.name + '.renderAsync()', function () {
-				return transform.renderAsync(input, options, locals).then(function (output) {
+			test(transform.name + '.renderAsync()', () => {
+				return transform.renderAsync(input, options, locals).then(output => {
 					checkOutput(output);
 				});
 			});
 		}
 
 		if (transform.renderFile) {
-			test(transform.name + '.renderFile()', function () {
-				var output = transform.renderFile(inputFile, options, locals);
+			test(transform.name + '.renderFile()', () => {
+				const output = transform.renderFile(inputFile, options, locals);
 				checkOutput(output);
 			});
 		}
 
 		if (transform.renderFileAsync) {
-			test(transform.name + '.renderFileAsync()', function () {
-				transform.renderFileAsync(inputFile, options, locals).then(function (output) {
+			test(transform.name + '.renderFileAsync()', () => {
+				transform.renderFileAsync(inputFile, options, locals).then(output => {
 					checkOutput(output);
 				});
 			});
 		}
-
 	}
 
-	assert(transform  && typeof transform === 'object', 'Transform must be an object');
+	assert(transform && typeof transform === 'object', 'Transform must be an object');
 	assert(typeof transform.name === 'string' && transform.name, 'Transform must have a name');
 	assert(typeof testDirectory === 'string', 'Must specify a testDirectory');
 
@@ -170,17 +171,17 @@ function addTests(transform, testDirectory, test) {
 			assert(typeof transform.outputFormat === 'string' && transform.outputFormat);
 		});
 		if (transform.inputFormats) {
-			test('transform has input formats', function () {
+			test('transform has input formats', () => {
 				assert(Array.isArray(transform.inputFormats), 'Expected transform.inputFormats to be an array');
-				assert(transform.inputFormats.every(function (format) {
+				assert(transform.inputFormats.every(format => {
 					return typeof format === 'string' && format;
 				}), 'Expected all inputFormats to be non-empty strings');
 			});
 		}
-		var dir = fs.readdirSync(testDirectory).filter(filename => {
+		const dir = fs.readdirSync(testDirectory).filter(filename => {
 			return filename[0] !== '.';
 		});
-		var isMultiTest = dir.length && dir.every(file => {
+		const isMultiTest = dir.length && dir.every(file => {
 			return fs.statSync(join(testDirectory, file)).isDirectory();
 		});
 		if (isMultiTest) {

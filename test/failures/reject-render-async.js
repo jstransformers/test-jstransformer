@@ -1,8 +1,9 @@
 'use strict';
 
-const path = require('path')
+const path = require('path');
 const testJStransformer = require('../../');
-const simplePath = path.join(__dirname, '..', '..', 'example', 'simple')
+
+const simplePath = path.join(__dirname, '..', '..', 'example', 'simple');
 const resolve = path.resolve;
 
 /**
@@ -12,10 +13,10 @@ testJStransformer({
 	name: 'renderAsync: This used to pass despite returning a rejected promise',
 	outputFormat: 'txt',
 	inputFormats: ['txt'],
-	renderAsync: (str, options, locals) => {
+	renderAsync: () => {
 		return new Promise((resolve, reject) => {
 			// Call reject to test a failed run.
-			reject('FAILURE!');
+			reject('FAILURE!'); // eslint-disable-line prefer-promise-reject-errors
 		});
 	}
 }, resolve(simplePath));
