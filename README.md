@@ -1,10 +1,11 @@
 # test-jstransformer
 
-A CLI for testing jstransformer implementations.
+A CLI for testing [JSTransformer](https://github.com/jstransformers/jstransformer) implementations.
 
 [![Build Status](https://img.shields.io/travis/jstransformers/test-jstransformer/master.svg)](https://travis-ci.org/jstransformers/test-jstransformer)
+[![Coverage Status](https://img.shields.io/codecov/c/github/jstransformers/test-jstransformer/master.svg)](https://codecov.io/gh/jstransformers/test-jstransformer)
+[![Dependency Status](https://img.shields.io/david/jstransformers/test-jstransformer/master.svg)](http://david-dm.org/jstransformers/test-jstransformer)
 [![Greenkeeper badge](https://badges.greenkeeper.io/jstransformers/test-jstransformer.svg)](https://greenkeeper.io/)
-[![Coverage Status](https://img.shields.io/coveralls/jstransformers/test-jstransformer/master.svg)](https://coveralls.io/r/jstransformers/test-jstransformer?branch=master)
 [![NPM version](https://img.shields.io/npm/v/test-jstransformer.svg)](https://www.npmjs.org/package/test-jstransformer)
 
 ## Installation

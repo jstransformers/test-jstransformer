@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.2: 2018-01-11
+
+- Updated dependencies
+
 ## v1.0.1: 2015-06-14
 
 - Allow dependencies.json to be relative to the current working directory
