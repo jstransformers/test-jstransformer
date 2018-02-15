@@ -7,8 +7,8 @@
     "jstransformer"
   ],
   "files": [
-    "index.js",
-    "bin/cli.js"
+    "bin/cli.js",
+    "index.js"
   ],
   "dependencies": {
     "foreground-child": "^1.5.6",
@@ -17,7 +17,7 @@
   },
   "scripts": {
     "test": "node test",
-    "posttest": "xo --space",
+    "posttest": "xo --space=2 index.js",
     "coverage": "istanbul cover test"
   },
   "repository": {
@@ -27,6 +27,6 @@
   "author": "Forbes Lindesay",
   "license": "MIT",
   "devDependencies": {
-    "xo": "^0.18.2"
+    "xo": "^0.20.1"
   }
 }

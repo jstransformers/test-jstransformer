@@ -5,7 +5,7 @@ const fs = require('fs');
 const assert = require('assert');
 const cp = require('child_process');
 const test = require('testit');
-const testJStransformer = require('../');
+const testJStransformer = require('..');
 
 const resolve = path.resolve;
 const simplePath = path.join(__dirname, '..', 'example', 'simple');

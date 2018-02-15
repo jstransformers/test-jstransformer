@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const testJStransformer = require('../../');
+const testJStransformer = require('../..');
 
 const simplePath = path.join(__dirname, '..', '..', 'example', 'simple');
 const resolve = path.resolve;
