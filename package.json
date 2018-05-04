@@ -27,6 +27,6 @@
   "author": "Forbes Lindesay",
   "license": "MIT",
   "devDependencies": {
-    "xo": "^0.20.1"
+    "xo": "^0.21.0"
   }
 }
