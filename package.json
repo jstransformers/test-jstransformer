@@ -1,6 +1,6 @@
 {
   "name": "test-jstransformer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A CLI for testing jstransformer implementations.",
   "bin": "./bin/cli.js",
   "keywords": [

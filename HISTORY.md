@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.3: 2019-01-15
+
+- Updated dependencies for Node.js 11 support
+
 ## v1.0.2: 2018-01-11
 
 - Updated dependencies
