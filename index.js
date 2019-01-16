@@ -2,31 +2,29 @@
 
 const assert = require('assert');
 const fs = require('fs');
-const join = require('path').join;
-const dirname = require('path').dirname;
-const extname = require('path').extname;
-const basename = require('path').basename;
-const resolve = require('path').resolve;
+const {join, dirname, extname, basename, resolve} = require('path');
 const testit = require('testit');
 
 function assertEqual(output, expected) {
   try {
-    assert.equal(output, expected);
-  } catch (err) {
+    assert.strictEqual(output, expected);
+  } catch (error) {
     console.log('   Output:\t' + JSON.stringify(output));
     console.log('   Expected:\t' + JSON.stringify(expected));
-    throw err;
+    throw error;
   }
 }
+
 function assertDeepEqual(output, expected) {
   try {
-    assert.deepEqual(output, expected);
-  } catch (err) {
+    assert.deepStrictEqual(output, expected);
+  } catch (error) {
     console.log('   Output:\t' + JSON.stringify(output));
     console.log('   Expected:\t' + JSON.stringify(expected));
-    throw err;
+    throw error;
   }
 }
+
 function getFilename(filename) {
   if (/\.\*$/.test(filename)) {
     const dir = fs.readdirSync(dirname(filename));
@@ -38,15 +36,19 @@ function getFilename(filename) {
         if (gotResult) {
           throw new Error('Multiple files were found matching ' + filename);
         }
+
         gotResult = true;
         result = p;
       }
     }
+
     if (gotResult) {
       return resolve(result);
     }
+
     throw new Error('Could not find a file matching ' + filename);
   }
+
   return resolve(filename);
 }
 
@@ -86,6 +88,7 @@ function addTests(transform, testDirectory, test) {
         assertEqual(template(locals).trim(), expected);
       }
     }
+
     function checkOutput(output) {
       if ((dependencies && dependencies.length > 0) || (typeof output === 'object' && output)) {
         assert(typeof output === 'object' && output, ' output should be an object because this module tracks dependencies');
@@ -178,6 +181,7 @@ function addTests(transform, testDirectory, test) {
         }), 'Expected all inputFormats to be non-empty strings');
       });
     }
+
     const dir = fs.readdirSync(testDirectory).filter(filename => {
       return filename[0] !== '.';
     });
