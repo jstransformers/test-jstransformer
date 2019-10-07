@@ -30,7 +30,7 @@ function getFilename(filename) {
     const dir = fs.readdirSync(dirname(filename));
     let result;
     let gotResult = false;
-    for (let i = 0; i < dir.length; i++) {
+    for (let i = 0; i < dir.length; i++) { // eslint-disable-line unicorn/no-for-loop
       const p = filename.replace(/\.\*$/, extname(dir[i]));
       if (dir[i] === basename(p)) {
         if (gotResult) {
