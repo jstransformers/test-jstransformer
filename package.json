@@ -12,13 +12,13 @@
   ],
   "dependencies": {
     "foreground-child": "^2.0.0",
-    "istanbul": "^0.4.5",
+    "nyc": "^15.0.0",
     "testit": "^3.0.0"
   },
   "scripts": {
     "test": "node test",
     "posttest": "xo --space=2 index.js",
-    "coverage": "istanbul cover test"
+    "coverage": "nyc node test"
   },
   "repository": {
     "type": "git",
