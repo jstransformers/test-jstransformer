@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.0: 2020-03-26
+
+- Updated coverage from [istanbul](https://www.npmjs.com/package/istanbul) to [nyc](https://www.npmjs.com/package/nyc)
+
 ## v1.0.3: 2019-01-15
 
 - Updated dependencies for Node.js 11 support

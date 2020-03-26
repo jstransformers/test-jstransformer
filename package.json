@@ -1,6 +1,6 @@
 {
   "name": "test-jstransformer",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "A CLI for testing jstransformer implementations.",
   "bin": "./bin/cli.js",
   "keywords": [
@@ -27,6 +27,6 @@
   "author": "Forbes Lindesay",
   "license": "MIT",
   "devDependencies": {
-    "xo": "^0.25.3"
+    "xo": "^0.28.1"
   }
 }
