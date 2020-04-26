@@ -5,7 +5,6 @@ A CLI for testing [JSTransformer](https://github.com/jstransformers/jstransforme
 [![Build Status](https://img.shields.io/travis/jstransformers/test-jstransformer/master.svg)](https://travis-ci.org/jstransformers/test-jstransformer)
 [![Coverage Status](https://img.shields.io/codecov/c/github/jstransformers/test-jstransformer/master.svg)](https://codecov.io/gh/jstransformers/test-jstransformer)
 [![Dependency Status](https://david-dm.org/david/jstransformers/test-jstransformer/status.svg)](https://david-dm.org/jstransformers/test-jstransformer)
-
 [![NPM version](https://img.shields.io/npm/v/test-jstransformer.svg)](https://www.npmjs.org/package/test-jstransformer)
 
 ## Installation
