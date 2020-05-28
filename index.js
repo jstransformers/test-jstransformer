@@ -71,11 +71,12 @@ function addTests(transform, testDirectory, test) {
     });
     const expected = read(join(directory, 'expected.*'));
 
-    function checkFunctionOutput(template) {
+    async function checkFunctionOutput(template) {
       if ((dependencies && dependencies.length > 0) || (typeof template === 'object' && template)) {
         assert(typeof template === 'object' && template, ' template should be an object because this module tracks dependencies');
         assert(typeof template.fn === 'function', 'template.fn should be a function');
-        assertEqual(template.fn(locals).trim(), expected);
+        let result = await Promise.resolve(template.fn(locals)).then(rendered => rendered.trim())
+        assertEqual(result, expected);
         assert(Array.isArray(template.dependencies), ' template.dependencies should be an array');
         assert(template.dependencies.every(path => {
           return typeof path === 'string';
@@ -85,7 +86,8 @@ function addTests(transform, testDirectory, test) {
         }), dependencies || []);
       } else {
         assert(typeof template === 'function', 'template should be a function, or an object with an "fn" property of type function and a "dependencies" property that is an array.');
-        assertEqual(template(locals).trim(), expected);
+        let result = await Promise.resolve(template(locals)).then(rendered => rendered.trim()) 
+        assertEqual(result, expected);
       }
     }
 
@@ -104,7 +106,7 @@ function addTests(transform, testDirectory, test) {
       }
     }
 
-    if (transform.compile) {
+    if (transform.compile && directory.indexOf("_async") === -1) {
       test(transform.name + '.compile()', () => {
         const template = transform.compile(input, options);
         checkFunctionOutput(template);
@@ -119,7 +121,7 @@ function addTests(transform, testDirectory, test) {
       });
     }
 
-    if (transform.compileFile) {
+    if (transform.compileFile && directory.indexOf("_async") === -1) {
       test(transform.name + '.compileFile()', () => {
         const template = transform.compileFile(inputFile, options);
         checkFunctionOutput(template);
@@ -134,7 +136,7 @@ function addTests(transform, testDirectory, test) {
       });
     }
 
-    if (transform.render) {
+    if (transform.render && directory.indexOf("_async") === -1) {
       test(transform.name + '.render()', () => {
         const output = transform.render(input, options, locals);
         checkOutput(output);
@@ -149,7 +151,7 @@ function addTests(transform, testDirectory, test) {
       });
     }
 
-    if (transform.renderFile) {
+    if (transform.renderFile && directory.indexOf("_async") === -1) {
       test(transform.name + '.renderFile()', () => {
         const output = transform.renderFile(inputFile, options, locals);
         checkOutput(output);
