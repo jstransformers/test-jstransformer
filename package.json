@@ -12,8 +12,8 @@
   ],
   "dependencies": {
     "foreground-child": "^2.0.0",
-    "nyc": "^15.0.0",
-    "testit": "^3.0.0"
+    "nyc": "^15.1.0",
+    "testit": "^3.1.0"
   },
   "scripts": {
     "test": "node test",
@@ -27,6 +27,6 @@
   "author": "Forbes Lindesay",
   "license": "MIT",
   "devDependencies": {
-    "xo": "^0.28.1"
+    "xo": "^0.38.2"
   }
 }

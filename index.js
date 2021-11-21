@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 const fs = require('fs');
-const {join, dirname, extname, basename, resolve} = require('path');
+const path = require('path');
 const testit = require('testit');
 
 function assertEqual(output, expected) {
@@ -27,12 +27,12 @@ function assertDeepEqual(output, expected) {
 
 function getFilename(filename) {
   if (/\.\*$/.test(filename)) {
-    const dir = fs.readdirSync(dirname(filename));
+    const files = fs.readdirSync(path.dirname(filename));
     let result;
     let gotResult = false;
-    for (let i = 0; i < dir.length; i++) { // eslint-disable-line unicorn/no-for-loop
-      const p = filename.replace(/\.\*$/, extname(dir[i]));
-      if (dir[i] === basename(p)) {
+    for (const file of files) {
+      const p = filename.replace(/\.\*$/, path.extname(file));
+      if (file === path.basename(p)) {
         if (gotResult) {
           throw new Error('Multiple files were found matching ' + filename);
         }
@@ -43,13 +43,13 @@ function getFilename(filename) {
     }
 
     if (gotResult) {
-      return resolve(result);
+      return path.resolve(result);
     }
 
     throw new Error('Could not find a file matching ' + filename);
   }
 
-  return resolve(filename);
+  return path.resolve(filename);
 }
 
 function read(filename) {
@@ -62,14 +62,14 @@ function addTests(transform, testDirectory, test) {
   test = test || testit;
 
   function addTestCases(directory) {
-    const inputFile = getFilename(join(directory, 'input.*'));
+    const inputFile = getFilename(path.join(directory, 'input.*'));
     const input = read(inputFile);
-    const options = require(join(directory, 'options'));
-    const locals = require(join(directory, 'locals'));
-    const dependencies = require(join(directory, 'dependencies')).map(dep => {
-      return resolve(directory, dep);
+    const options = require(path.join(directory, 'options'));
+    const locals = require(path.join(directory, 'locals'));
+    const dependencies = require(path.join(directory, 'dependencies')).map(dep => {
+      return path.resolve(directory, dep);
     });
-    const expected = read(join(directory, 'expected.*'));
+    const expected = read(path.join(directory, 'expected.*'));
 
     function checkFunctionOutput(template) {
       if ((dependencies && dependencies.length > 0) || (typeof template === 'object' && template)) {
@@ -77,11 +77,11 @@ function addTests(transform, testDirectory, test) {
         assert(typeof template.fn === 'function', 'template.fn should be a function');
         assertEqual(template.fn(locals).trim(), expected);
         assert(Array.isArray(template.dependencies), ' template.dependencies should be an array');
-        assert(template.dependencies.every(path => {
-          return typeof path === 'string';
+        assert(template.dependencies.every(dependency => {
+          return typeof dependency === 'string';
         }), ' template.dependencies should all be strings');
-        assertDeepEqual(template.dependencies.map(path => {
-          return resolve(path);
+        assertDeepEqual(template.dependencies.map(dependency => {
+          return path.resolve(dependency);
         }), dependencies || []);
       } else {
         assert(typeof template === 'function', 'template should be a function, or an object with an "fn" property of type function and a "dependencies" property that is an array.');
@@ -95,8 +95,8 @@ function addTests(transform, testDirectory, test) {
         assert(typeof output.body === 'string', 'output.body should be a string');
         assertEqual(output.body.trim(), expected);
         assert(Array.isArray(output.dependencies), ' output.dependencies should be an array');
-        assertDeepEqual(output.dependencies.map(path => {
-          return resolve(path);
+        assertDeepEqual(output.dependencies.map(dependency => {
+          return path.resolve(dependency);
         }), dependencies || []);
       } else {
         assert(typeof output === 'string', 'output should be a string, or an object with a "body" property of type string and a "dependencies" property that is an array.');
@@ -185,15 +185,15 @@ function addTests(transform, testDirectory, test) {
     const dir = fs.readdirSync(testDirectory).filter(filename => {
       return filename[0] !== '.';
     });
-    const isMultiTest = dir.length && dir.every(file => {
-      return fs.statSync(join(testDirectory, file)).isDirectory();
+    const isMultiTest = dir.length > 0 && dir.every(file => {
+      return fs.statSync(path.join(testDirectory, file)).isDirectory();
     });
     if (isMultiTest) {
-      dir.forEach(subdir => {
+      for (const subdir of dir) {
         test(subdir, () => {
-          addTestCases(join(testDirectory, subdir));
+          addTestCases(path.join(testDirectory, subdir));
         });
-      });
+      }
     } else {
       addTestCases(testDirectory);
     }
